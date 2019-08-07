@@ -1,0 +1,5 @@
+build/
+dist/
+.eggs/
+baker.egg-info/
+__pycache__
