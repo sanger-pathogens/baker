@@ -3,3 +3,6 @@ dist/
 .eggs/
 baker.egg-info/
 __pycache__
+.noseids
+nosetests.xml
+.vscode/
