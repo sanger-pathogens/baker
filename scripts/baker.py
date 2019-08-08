@@ -5,8 +5,6 @@ import sys
 import os
 import pkg_resources
 
-from bakerlib.MYCLASS import MYCLASS
-from bakerlib.InputTypes import InputTypes
 from bakerlib.argument_parsing import new_argument_parser
 
 def bake(arguments):
