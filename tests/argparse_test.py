@@ -1,0 +1,45 @@
+import argparse
+import unittest
+from bakerlib.argument_parsing import new_argument_parser
+
+
+class TestParser(unittest.TestCase):
+
+    def setUp(self):
+        self.under_test = new_argument_parser(
+            lambda name: ErrorRaisingArgumentParser(prog=name))
+
+    def test_parser_multiple_directories(self):
+        args = self.under_test.parse_args(
+            ['bake', '-output', 'out', 'dir1', 'dir2'])
+        self.assertEqual(args, argparse.Namespace(
+            directories=['dir1', 'dir2'], output='out'))
+
+    def test_parser_single_directory(self):
+        args = self.under_test.parse_args(['bake', '-output', 'out', 'dir1'])
+        self.assertEqual(args, argparse.Namespace(
+            directories=['dir1'], output='out'))
+
+    def test_parser_short_options(self):
+        args = self.under_test.parse_args(['bake', '-o', 'out', 'dir1'])
+        self.assertEqual(args, argparse.Namespace(
+            directories=['dir1'], output='out'))
+
+    def test_fail_if_no_input_directory(self):
+        with self.assertRaises(ValueError) as cm:
+            self.under_test.parse_args(['bake', '-output', 'out'])
+        self.assertEqual(
+            cm.exception.args[0], 'the following arguments are required: directory')
+
+    def test_fail_if_no_output_directory(self):
+        with self.assertRaises(ValueError) as cm:
+            self.under_test.parse_args(['bake', 'dir1'])
+        self.assertEqual(
+            cm.exception.args[0], 'the following arguments are required: -output')
+
+class ErrorRaisingArgumentParser(argparse.ArgumentParser):
+    def error(self, message):
+        raise ValueError(message)
+            
+            
+            
