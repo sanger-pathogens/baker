@@ -26,6 +26,7 @@ setup(
     test_suite='nose.collector',
     tests_require=['nose >= 1.3'],
     install_requires=[
+      'PyYaml'
          #'biopython >= 1.68',
          #'pyfastaq >= 3.12.0'
        ],
