@@ -5,4 +5,3 @@ This repo is a template for setting up a new python project on GitHub. After clo
 * Make sure to change the paths and URLs in the badges in the README and remove any that don't apply 
 * Edit the years in the first line of the LICENSE file to match your project
 * Consider adding the project to [codecov](https://codecov.io/gh). For more information, see the [wiki](http://mediawiki.internal.sanger.ac.uk/index.php/Adding_Pathogen_packages_to_codecov)
-* test
