@@ -1,8 +1,11 @@
 
 from bakerlib.softwares import get_softwares
+import logging
+
+_logger = logging.getLogger('main')
 
 def bake(input_dirs, output_dir):
+	_logger.debug("Baking input: %s, output: %s", input_dirs, output_dir)
 	softwares = get_softwares(input_dirs)
-	print("I am baking", output_dir, input_dirs)
-	print("I have loaded ", softwares)
+	_logger.debug("Software loaded: %s", softwares)
 	return softwares
