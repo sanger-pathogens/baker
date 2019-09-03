@@ -13,17 +13,17 @@ class TestParser(unittest.TestCase):
         args = self.under_test.parse_args(
             ['bake', '--output', 'out', 'dir1', 'dir2'])
         self.assertEqual(args, argparse.Namespace(
-            directories=['dir1', 'dir2'], output='out', func=mock_backing))
+            input_dirs=['dir1', 'dir2'], output_dir='out', func=mock_backing))
 
     def test_parser_single_directory(self):
         args = self.under_test.parse_args(['bake', '--output', 'out', 'dir1'])
         self.assertEqual(args, argparse.Namespace(
-            directories=['dir1'], output='out', func=mock_backing))
+            input_dirs=['dir1'], output_dir='out', func=mock_backing))
 
     def test_parser_short_options(self):
         args = self.under_test.parse_args(['bake', '-o', 'out', 'dir1'])
         self.assertEqual(args, argparse.Namespace(
-            directories=['dir1'], output='out', func=mock_backing))
+            input_dirs=['dir1'], output_dir='out', func=mock_backing))
 
     def test_fail_if_no_input_directory(self):
         with self.assertRaises(ValueError) as cm:

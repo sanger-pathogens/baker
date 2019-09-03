@@ -13,7 +13,7 @@ def get_softwares(inputs):
 
 def _read_software(infile):
     try:
-        return yaml.load(infile)
+        return yaml.load(infile, Loader=yaml.SafeLoader)
     except yaml.YAMLError as exc:
         print(exc)
         return None
