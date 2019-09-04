@@ -10,5 +10,7 @@ def new_argument_parser(baking, factory=lambda: argparse.ArgumentParser()):
                              nargs='+', help='directory of yaml file to process')
     bake_parser.add_argument(
         '--output','-o', dest='output_dir', required=True, help='output directory for configurations and wrappers')
+    bake_parser.add_argument(
+        '--templates','-t', dest='template_dir', required=True, help='directory containing the jinja2 templates')
     bake_parser.set_defaults(func=baking)
     return parser

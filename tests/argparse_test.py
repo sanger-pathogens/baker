@@ -11,31 +11,37 @@ class TestParser(unittest.TestCase):
 
     def test_parser_multiple_directories(self):
         args = self.under_test.parse_args(
-            ['bake', '--output', 'out', 'dir1', 'dir2'])
+            ['bake', '--templates', 'templates', '--output', 'out', 'dir1', 'dir2'])
         self.assertEqual(args, argparse.Namespace(
-            input_dirs=['dir1', 'dir2'], output_dir='out', func=mock_backing))
+            input_dirs=['dir1', 'dir2'], template_dir='templates', output_dir='out', func=mock_backing))
 
     def test_parser_single_directory(self):
-        args = self.under_test.parse_args(['bake', '--output', 'out', 'dir1'])
+        args = self.under_test.parse_args(['bake', '--templates', 'templates', '--output', 'out', 'dir1'])
         self.assertEqual(args, argparse.Namespace(
-            input_dirs=['dir1'], output_dir='out', func=mock_backing))
+            input_dirs=['dir1'], template_dir='templates', output_dir='out', func=mock_backing))
 
     def test_parser_short_options(self):
-        args = self.under_test.parse_args(['bake', '-o', 'out', 'dir1'])
+        args = self.under_test.parse_args(['bake', '-t', 'templates', '-o', 'out', 'dir1'])
         self.assertEqual(args, argparse.Namespace(
-            input_dirs=['dir1'], output_dir='out', func=mock_backing))
+            input_dirs=['dir1'], template_dir='templates', output_dir='out', func=mock_backing))
 
     def test_fail_if_no_input_directory(self):
         with self.assertRaises(ValueError) as cm:
-            self.under_test.parse_args(['bake', '--output', 'out'])
+            self.under_test.parse_args(['bake', '--templates', 'templates', '--output', 'out'])
         self.assertEqual(
             cm.exception.args[0], 'the following arguments are required: directory')
 
     def test_fail_if_no_output_directory(self):
         with self.assertRaises(ValueError) as cm:
-            self.under_test.parse_args(['bake', 'dir1'])
+            self.under_test.parse_args(['bake', '--templates', 'templates', 'dir1'])
         self.assertEqual(
             cm.exception.args[0], 'the following arguments are required: --output/-o')
+
+    def test_fail_if_no_template_directory(self):
+        with self.assertRaises(ValueError) as cm:
+            self.under_test.parse_args(['bake','--output', 'out', 'dir'])
+        self.assertEqual(
+            cm.exception.args[0], 'the following arguments are required: --templates/-t')
 
 
 def mock_backing():

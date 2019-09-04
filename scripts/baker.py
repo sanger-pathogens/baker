@@ -4,7 +4,7 @@ import argparse
 import sys
 import os
 import pkg_resources
-from jinja2 import Environment, PackageLoader
+import logging
 from bakerlib.argument_parsing import new_argument_parser
 from bakerlib.softwares import get_softwares
 from bakerlib.main import bake
@@ -16,10 +16,12 @@ from bakerlib.main import bake
 # except pkg_resources.DistributionNotFound:
 # 	version = 'x.y.z'
 
+##TODO Debug only if verbose, otherwise INFO
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s\t%(name)s\t{%(pathname)s:%(lineno)d}\t%(levelname)s\t%(message)s')
 parser = new_argument_parser(baking=bake)
 arguments = parser.parse_args()
+parameters = dict(vars(arguments))
 if hasattr(arguments, "func"):
-	parameters = dict(vars(arguments))
 	del parameters["func"]
 	arguments.func(**parameters)
 else:
