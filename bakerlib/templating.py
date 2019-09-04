@@ -17,14 +17,14 @@ class TemplateRenderer:
     def __init__(self, environment):
         self.jinja2_environment = environment
 
-    def render(self, software, executable):
+    def render(self, software, function):
         parameters = dict(software)
-        parameters['executable'] = executable
+        parameters['function'] = function
         template = self.__select_template(software)
         return template.render(**parameters)
 
-    def create_script(self, directory, name, software, executable):
-        content = self.render(software, executable)
+    def create_script(self, directory, name, software, function):
+        content = self.render(software, function)
         makedirs(directory, exist_ok=True)
         script_name = "%s/%s" % (directory, name)
         with open(script_name, 'w') as bash_wrapper:
