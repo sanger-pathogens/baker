@@ -17,6 +17,18 @@ def _software_name_version_validation(software):
     if "version" not in software:
         raise InvalidSoftwareError("Version not in software " + software)
 
+def _function_enrichments(software):
+    exported_functions = []
+    for function in software["functions"]:
+        if isinstance(function, dict):
+            if "args" not in function:
+                function["args"] = []
+            if "executable" not in function:
+                function["executable"] = function["script_name"]
+            exported_functions.append(function)
+        elif isinstance(function, str):
+            exported_functions.append({"script_name": function, "executable": function, "args": []})
+    software["exported_functions"] = exported_functions
 
 def _image_enrichment(software):
     if "image" not in software:
@@ -35,7 +47,7 @@ def _url_enrichments(software):
                 software["version"] = match.group("version")
 
 
-def get_softwares(inputs, enrichments=[_url_enrichments, _software_name_version_validation, _image_enrichment]):
+def get_softwares(inputs, enrichments=[_url_enrichments, _software_name_version_validation, _image_enrichment, _function_enrichments]):
     filenames = _list_yaml_files(inputs)
     _logger.debug("Yaml files discovered: %s", filenames)
     softwares = []

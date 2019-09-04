@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, call, mock_open
-from bakerlib.softwares import get_softwares,_image_enrichment,_url_enrichments
+from bakerlib.softwares import get_softwares,_image_enrichment,_url_enrichments, _function_enrichments
 from io import StringIO
 
 
@@ -61,6 +61,41 @@ class TestSoftwareRetrieval(unittest.TestCase):
     def setUp(self):
         pass
         #self.under_test = Bake(self.an_output_directory)
+
+    def test_should_copy_function_map(self):
+        software = {"functions": [{"script_name": "script_name", "executable": "executable", "args": ["args1", "args2"]}]}
+        expected = dict(software)
+        expected["exported_functions"] = expected["functions"]
+        _function_enrichments(software)
+        self.assertEqual(software, expected)
+
+    def test_should_populate_executable_in_function_if_missing(self):
+        software = {"functions": [{"script_name": "script_name", "args": ["args1", "args2"]}]}
+        expected = dict(software)
+        expected["exported_functions"] = [{"script_name": "script_name", "executable": "script_name", "args": ["args1", "args2"]}]
+        _function_enrichments(software)
+        self.assertEqual(software, expected)
+
+    def test_should_populate_args_in_function_if_missing(self):
+        software = {"functions": [{"script_name": "script_name",  "executable": "executable"}]}
+        expected = dict(software)
+        expected["exported_functions"] = [{"script_name": "script_name", "executable": "executable", "args": []}]
+        _function_enrichments(software)
+        self.assertEqual(software, expected)
+
+    def test_should_populate_simple_function_if_string(self):
+        software = {"functions": ["script_name"]}
+        expected = dict(software)
+        expected["exported_functions"] = [{"script_name": "script_name", "executable": "script_name", "args": []}]
+        _function_enrichments(software)
+        self.assertEqual(software, expected)
+
+    def test_should_combine_styles(self):
+        software = {"functions": ["script_name", {"script_name": "script_name2"}]}
+        expected = dict(software)
+        expected["exported_functions"] = [{"script_name": "script_name", "executable": "script_name", "args": []}, {"script_name": "script_name2", "executable": "script_name2", "args": []}]
+        _function_enrichments(software)
+        self.assertEqual(software, expected)
 
     def test_should_enrich_software_with_image(self):
         software = {"name" : "A_NAME", "version" : "A_VERSION"}

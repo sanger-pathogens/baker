@@ -14,6 +14,8 @@ A_CUSTOM_TEMPLATE_BASED_SOFTWARE = {"name": "artemis",
 A_DEFAULT_TEMPLATE_BASED_SOFTWARE = {
     "url": "docker://someurl"}
 
+A_SOFTWARE_FUNCTION = {"script_name": "script_name", "executable": "executable", "args": []}
+
 
 class TestTemplateSelector(unittest.TestCase):
     def setUp(self):
@@ -22,11 +24,11 @@ class TestTemplateSelector(unittest.TestCase):
 
     def test_should_render_custom_template_software(self):
         actual = self.under_test.render(
-            A_CUSTOM_TEMPLATE_BASED_SOFTWARE, "executable")
+            A_CUSTOM_TEMPLATE_BASED_SOFTWARE, A_SOFTWARE_FUNCTION)
         self.assertEqual(
             actual, "generic_template\nartemis\n18.0.3\nexecutable")
 
     def test_should_render_default_template_software(self):
         actual = self.under_test.render(
-            A_DEFAULT_TEMPLATE_BASED_SOFTWARE, "executable")
+            A_DEFAULT_TEMPLATE_BASED_SOFTWARE, A_SOFTWARE_FUNCTION)
         self.assertEqual(actual, "default\ndocker://someurl\nexecutable")
