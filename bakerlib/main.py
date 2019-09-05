@@ -7,12 +7,12 @@ from bakerlib.templating import TemplateRenderer
 _logger = logging.getLogger('main')
 
 
-def bake(input_dirs, output_dir, template_dir):
-    _bake(input_dirs, output_dir, TemplateRenderer.new_instance(
+def decorate(input_dirs, output_dir, template_dir):
+    _decorate(input_dirs, output_dir, TemplateRenderer.new_instance(
         template_dir), get_softwares)
 
 
-def _bake(input_dirs, output_dir, renderer, retrieve_software):
+def _decorate(input_dirs, output_dir, renderer, retrieve_software):
     softwares = retrieve_software(input_dirs)
     _logger.debug("Software retrieved: %s", softwares)
     for software in softwares:
