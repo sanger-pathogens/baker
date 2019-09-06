@@ -58,10 +58,6 @@ def glob_side_effect(value):
 
 class TestSoftwareRetrieval(unittest.TestCase):
 
-    def setUp(self):
-        pass
-        #self.under_test = Bake(self.an_output_directory)
-
     def test_should_copy_function_map(self):
         software = {"functions": [{"script_name": "script_name", "executable": "executable", "args": ["args1", "args2"]}]}
         expected = dict(software)

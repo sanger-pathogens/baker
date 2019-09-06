@@ -3,22 +3,27 @@ import re
 
 from bakerlib.softwares import get_softwares
 from bakerlib.templating import TemplateRenderer
+from bakerlib.rc_processing import update_rc_file
 
 _logger = logging.getLogger('main')
 
 
-def bake(input_dirs, output_dir, template_dir):
-    _bake(input_dirs, output_dir, TemplateRenderer.new_instance(
-        template_dir), get_softwares)
+def decorate(input_dirs, output_dir, template_dir):
+    _decorate(input_dirs, output_dir, TemplateRenderer.new_instance(
+        template_dir), get_softwares, update_rc_file)
 
 
-def _bake(input_dirs, output_dir, renderer, retrieve_software):
+def _decorate(input_dirs, output_dir, renderer, retrieve_software, rc_file_updater):
     softwares = retrieve_software(input_dirs)
     _logger.debug("Software retrieved: %s", softwares)
     for software in softwares:
         _logger.info("Processing %s version %s",
                      software["name"], software["version"])
-        wrapper_dir = "%s/%s/wrappers" % (output_dir, software["name"])
+        software_directory = software["name"]
+        wrapper_directory = "%s/wrappers" % software_directory
+        output_wrapper_directory = "%s/%s" % (output_dir, wrapper_directory)
+        output_software_directory = "%s/%s" % (output_dir, software_directory)
+        rc_file_updater(output_software_directory, software["name"] + '.rc', wrapper_directory)
         for function in software['exported_functions']:
             renderer.create_script(
-                wrapper_dir, function["script_name"], software, function)
+                output_wrapper_directory, function["script_name"], software, function)

@@ -4,7 +4,7 @@ import argparse
 import scripts
 
 from unittest.mock import MagicMock, call
-from bakerlib.main import _bake
+from bakerlib.main import _decorate
 from os.path import dirname, abspath
 
 
@@ -45,10 +45,15 @@ class TestBaker(unittest.TestCase):
 
     def test_should_bake_softwares(self):
         mock_renderer = MagicMock()
-        _bake(input_dirs=[AN_INPUT_DIR, ANOTHER_INPUT_DIR], output_dir=AN_OUTPUT_DIR,
-                          renderer=mock_renderer, retrieve_software=mock_retrieve_software)
+        mock_update_rc_file = MagicMock()
+        _decorate(input_dirs=[AN_INPUT_DIR, ANOTHER_INPUT_DIR], output_dir=AN_OUTPUT_DIR,
+                          renderer=mock_renderer, retrieve_software=mock_retrieve_software, rc_file_updater=mock_update_rc_file)
         self.assertCountEqual(mock_renderer.create_script.call_args_list,
                           [
                               call('AN_OUTPUT_DIR/artemis/wrappers', 'art', A_SOFTWARE, A_SOFTWARE_FUNCTIONS_1),
                               call('AN_OUTPUT_DIR/artemis/wrappers', 'act', A_SOFTWARE, A_SOFTWARE_FUNCTIONS_2),
                               call('AN_OUTPUT_DIR/gff3toembl/wrappers', 'interesting', ANOTHER_SOFTWARE, ANOTHER_SOFTWARE_FUNCTION)])
+        self.assertCountEqual(mock_update_rc_file.call_args_list,
+                          [
+                              call('AN_OUTPUT_DIR/artemis', 'artemis.rc', 'artemis/wrappers'),
+                              call('AN_OUTPUT_DIR/gff3toembl', 'gff3toembl.rc', 'gff3toembl/wrappers')])
