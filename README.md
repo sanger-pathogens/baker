@@ -1,7 +1,46 @@
-# python-project-template 
-This repo is a template for setting up a new python project on GitHub. After cloning and reinitialising this repository as described in the [SOP](http://mediawiki.internal.sanger.ac.uk/index.php/Creating_a_New_Pathogen_Project_on_GitHub), please make sure to do the following when creating a new project:
+# baker
+Baker is a tool that facilitates the installation and management of bioinformatics software.  It leverages container technology such as singularity and docker as well as Jinja2 template to build wrapper scripts
 
-* A template for the README is available in the file called README_template.md. Please edit this file, then rename it to README.md (to overwrite _this_ file)
-* Make sure to change the paths and URLs in the badges in the README and remove any that don't apply 
-* Edit the years in the first line of the LICENSE file to match your project
-* Consider adding the project to [codecov](https://codecov.io/gh). For more information, see the [wiki](http://mediawiki.internal.sanger.ac.uk/index.php/Adding_Pathogen_packages_to_codecov)
+[![Build Status](https://travis-ci.org/sanger-pathogens/baker.svg?branch=master)](https://travis-ci.org/sanger-pathogens/baker)   
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-brightgreen.svg)](https://github.com/sanger-pathogens/baker/blob/master/LICENSE)   
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/sangerpathogens/baker.svg)](https://hub.docker.com/r/sangerpathogens/baker)   
+[![Docker Pulls](https://img.shields.io/docker/pulls/sangerpathogens/baker.svg)](https://hub.docker.com/r/sangerpathogens/baker)   
+[![codecov](https://codecov.io/gh/sanger-pathogens/baker/branch/master/graph/badge.svg)](https://codecov.io/gh/sanger-pathogens/baker)   
+
+## Install
+### Pip
+Install master:
+```
+pip install git+https://github.com/sanger-pathogens/baker.git
+```
+Install a specific version:```pip install git+https://github.com/sanger-pathogens/baker.git@<TAG>```.  Example:
+```
+pip install git+https://github.com/sanger-pathogens/baker.git@v0.0.1
+```
+Once install, baker can be run directly:
+```
+baker.py -h
+```
+### Docker
+Pull the latest image:
+```
+docker pull sangerpathogens/baker:latest
+```
+
+Run in a container:
+```
+docker run --rm -it -v /home:/home sangerpathogens/baker:latest baker.py -h
+```
+
+To pull and run a specific version, just replace ```latest``` by the version number.  Example:
+```
+docker pull sangerpathogens/baker:0.0.1
+docker run --rm -it -v /home:/home sangerpathogens/baker:0.0.1 baker.py -h
+```
+
+## Usage
+Please run ```baker.py -h``` for help
+
+## License
+Baker is free software, licensed under [GPLv3](https://github.com/sanger-pathogens/baker/blob/master/LICENSE).
+

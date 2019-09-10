@@ -8,6 +8,9 @@ ENV  BUILD_DIR /tmp/baker-install
 RUN  mkdir -p ${BUILD_DIR}
 COPY . ${BUILD_DIR}
 
+RUN echo "**** install bash ****" && \
+    apk add --no-cache bash
+
 RUN echo "**** install Python ****" && \
     apk add --no-cache python3 && \
     if [ ! -e /usr/bin/python ]; then ln -sf python3 /usr/bin/python ; fi && \
