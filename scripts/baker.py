@@ -3,21 +3,15 @@
 import argparse
 import sys
 import os
-import pkg_resources
 import logging
 from bakerlib.argument_parsing import new_argument_parser
 from bakerlib.softwares import get_softwares
-from bakerlib.main import decorate
+from bakerlib.main import decorate, preamble
 
-
-# version = ''
-# try:
-# 	version = pkg_resources.get_distribution("MYPROJECT").version
-# except pkg_resources.DistributionNotFound:
-# 	version = 'x.y.z'
 
 ##TODO Debug only if verbose, otherwise INFO
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s\t%(name)s\t{%(pathname)s:%(lineno)d}\t%(levelname)s\t%(message)s')
+preamble()
 parser = new_argument_parser(decorating=decorate)
 arguments = parser.parse_args()
 parameters = dict(vars(arguments))

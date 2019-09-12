@@ -1,11 +1,22 @@
 import logging
 import re
 
+from pkg_resources import get_distribution, DistributionNotFound
 from bakerlib.softwares import get_softwares
 from bakerlib.templating import TemplateRenderer
 from bakerlib.rc_processing import update_rc_file
 
 _logger = logging.getLogger('main')
+
+
+def _get_version():
+    try:
+        return get_distribution("baker").version
+    except DistributionNotFound:
+        return '<Unknown>'
+
+def preamble():
+    _logger.info("Baker version %s", _get_version())
 
 
 def decorate(input_dirs, output_dir, template_dir):
@@ -19,7 +30,7 @@ def _decorate(input_dirs, output_dir, renderer, retrieve_software, rc_file_updat
     for software in softwares:
         _logger.info("Processing %s version %s",
                      software["name"], software["version"])
-        software_directory = software["name"]
+        software_directory = "%s/%s" % (software["name"], software["version"])
         wrapper_directory = "%s/wrappers" % software_directory
         output_wrapper_directory = "%s/%s" % (output_dir, wrapper_directory)
         output_software_directory = "%s/%s" % (output_dir, software_directory)
