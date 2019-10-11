@@ -14,13 +14,13 @@ def get_version():
     except DistributionNotFound:
         return '<Unknown>'
 
-def decorate(input_dirs, output_dir, template_dir):
-    _decorate(input_dirs, output_dir, TemplateRenderer.new_instance(
+def decorate(input_dir, output_dir, template_dir):
+    _decorate(input_dir, output_dir, TemplateRenderer.new_instance(
         template_dir), get_softwares)
 
 
-def _decorate(input_dirs, output_dir, renderer, retrieve_software):
-    softwares = retrieve_software(input_dirs)
+def _decorate(input_dir, output_dir, renderer, retrieve_software):
+    softwares = retrieve_software([input_dir])
     _logger.debug("Software retrieved: %s", softwares)
     for software in softwares:
         _logger.info("Processing %s version %s",

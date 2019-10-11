@@ -9,7 +9,6 @@ from os.path import dirname, abspath
 
 
 AN_INPUT_DIR = 'AN INPUT DIRECTORY'
-ANOTHER_INPUT_DIR = 'ANOTHER INPUT DIRECTORY'
 A_SOFTWARE_FUNCTIONS_1 = {"script_name": "art", "executable": "art", "args": []}
 A_SOFTWARE_FUNCTIONS_2 = {"script_name": "act", "executable": "act", "args": []}
 A_SOFTWARE = {"name": "artemis",
@@ -36,7 +35,6 @@ def mock_retrieve_software(value):
     result = []
     if AN_INPUT_DIR in value:
         result.append(A_SOFTWARE)
-    if ANOTHER_INPUT_DIR in value:
         result.append(ANOTHER_SOFTWARE)
     return result
 
@@ -45,7 +43,7 @@ class TestBaker(unittest.TestCase):
 
     def test_should_bake_softwares(self):
         mock_renderer = MagicMock()
-        _decorate(input_dirs=[AN_INPUT_DIR, ANOTHER_INPUT_DIR], output_dir=AN_OUTPUT_DIR,
+        _decorate(input_dir=AN_INPUT_DIR, output_dir=AN_OUTPUT_DIR,
                           renderer=mock_renderer, retrieve_software=mock_retrieve_software)
         self.assertCountEqual(mock_renderer.create_script.call_args_list,
                           [
