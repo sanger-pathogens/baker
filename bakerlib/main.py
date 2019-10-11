@@ -8,15 +8,11 @@ from bakerlib.templating import TemplateRenderer
 _logger = logging.getLogger('main')
 
 
-def _get_version():
+def get_version():
     try:
         return get_distribution("baker").version
     except DistributionNotFound:
         return '<Unknown>'
-
-def preamble():
-    _logger.info("Baker version %s", _get_version())
-
 
 def decorate(input_dirs, output_dir, template_dir):
     _decorate(input_dirs, output_dir, TemplateRenderer.new_instance(

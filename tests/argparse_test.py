@@ -6,7 +6,7 @@ from bakerlib.argument_parsing import new_argument_parser
 class TestParser(unittest.TestCase):
 
     def setUp(self):
-        self.under_test = new_argument_parser(mock_backing,
+        self.under_test = new_argument_parser(mock_backing, version="X.X",
                                               factory=lambda: ErrorRaisingArgumentParser())
 
     def test_parser_multiple_directories(self):
