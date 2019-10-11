@@ -19,6 +19,11 @@ class ArgumentParserBuilder:
             '--version', action='version', version=version)
         return self
 
+    def with_verbose(self):
+        self.parser.add_argument(
+            '--verbose','-v', dest='verbose', default=False, action='store_true')
+        return self
+
     def with_decorating(self, decorating):
         decorate_parser = self.subparsers.add_parser(
             'decorate', help='Generate wrappers for all softwares')
