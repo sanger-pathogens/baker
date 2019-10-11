@@ -7,12 +7,12 @@ from jinja2 import Environment, FileSystemLoader
 _logger = logging.getLogger('templating')
 
 
-
 class TemplateRenderer:
+
     @staticmethod
     def new_instance(directory):
         # TODO DI
-        return TemplateRenderer(environment = Environment(loader=FileSystemLoader(directory)))
+        return TemplateRenderer(environment=Environment(loader=FileSystemLoader(directory)))
 
     def __init__(self, environment):
         self.jinja2_environment = environment
@@ -38,6 +38,3 @@ class TemplateRenderer:
     def __select_template(self, software):
         template = self.__select_template_name(software)
         return self.jinja2_environment.get_template(template)
-
-
-

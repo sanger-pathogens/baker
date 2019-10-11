@@ -56,6 +56,7 @@ def get_softwares(inputs, enrichments=[_url_enrichments, _software_name_version_
         if software is not None:
             _enrich_software(enrichments, software)
             softwares.append(software)
+    _logger.debug("Software retrieved: %s", softwares)
     return softwares
 
 
@@ -73,7 +74,7 @@ def _read_software(infile):
 
 
 def _read_software_from_file(filename):
-    _logger.info("Loading software from file %s", filename)
+    _logger.debug("Loading software from file %s", filename)
     with open(filename, 'r') as input:
         return _read_software(input)
 
