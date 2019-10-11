@@ -18,6 +18,8 @@ def decorate(input_dir, output_dir, template_dir):
     _decorate(input_dir, output_dir, TemplateRenderer.new_instance(
         template_dir), get_softwares)
 
+def singularity_check(input_dir, output_dir):
+    print("Checking %s reconciles with %s" % (input_dir, output_dir))
 
 def _decorate(input_dir, output_dir, renderer, retrieve_software):
     softwares = retrieve_software([input_dir])
