@@ -6,13 +6,15 @@ import os
 import logging
 from bakerlib.argument_parsing import ArgumentParserBuilder
 from bakerlib.softwares import get_softwares
-from bakerlib.main import decorate, get_version, singularity_check
+from bakerlib.main import decorate, get_version, singularity_check, singularity_bake, singularity_legacy_bake
 
 
 parser = ArgumentParserBuilder.new_instance()\
     .with_decorating(decorate)\
     .with_version(get_version)\
     .with_singularity_check(singularity_check)\
+    .with_singularity_bake(singularity_bake)\
+    .with_legacy_bake(singularity_legacy_bake)\
     .with_verbose()\
     .build()
 arguments = parser.parse_args()
