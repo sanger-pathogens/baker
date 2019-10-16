@@ -6,6 +6,8 @@ from bakerlib.softwares import get_softwares
 from bakerlib.templating import TemplateRenderer
 from bakerlib.images import ImageRepository
 from bakerlib.singularity import SingularityChecker
+from bakerlib.singularity_build import SingularityBaker
+from bakerlib.docker_config import DockerConfig
 
 _logger = logging.getLogger('main')
 
@@ -26,11 +28,17 @@ def singularity_check(input_dir, output_dir):
     checker = SingularityChecker(lambda s: print("missing %s" % s), lambda s: print("unknown %s" % s))
     _singularity_check(lambda : get_softwares([input_dir]), image_repo, checker)
 
-def singularity_build(input_dir, output_dir, missing, images):
+def singularity_bake(input_dir, output_dir, config, missing, images):
     _logger.debug("Building missing images between %s and %s" % (input_dir, output_dir))
     image_repo = ImageRepository(output_dir)
-    checker = SingularityChecker(lambda s: print("building image %s" % s), lambda s: None)
-    _singularity_check(lambda : get_softwares([input_dir]), image_repo, checker)
+    docker_config = DockerConfig(config)
+    softwares = get_softwares([input_dir])
+    baker = SingularityBaker(output_dir, docker_config, softwares)
+    for image in images:
+        baker.bake(image)
+    if missing:
+        checker = SingularityChecker(lambda s: baker.bake(s), lambda s: None)
+        _singularity_check(lambda : softwares, image_repo, checker)
 
 def _singularity_check(retrieve_softwares, image_repo, checker):
     softwares = retrieve_softwares()

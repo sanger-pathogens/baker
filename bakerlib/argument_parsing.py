@@ -53,6 +53,8 @@ class ArgumentParserBuilder:
             '--input', '-i', dest='input_dir', required=True, help='directory of software definition yaml files to process')
         bake_parser.add_argument(
             '--output', '-o', dest='output_dir', required=True, help='output directory for images')
+        bake_parser.add_argument(
+            '--config', '-c', dest='config', required=True, help='docker registry access config')
         group = bake_parser.add_mutually_exclusive_group(required=True)
         group.add_argument(
             '--missing', '-m', dest='missing', default=False, action='store_true', help='build all missing images')
