@@ -46,5 +46,20 @@ class ArgumentParserBuilder:
         reconcile_parser.set_defaults(func=reconciling)
         return self
 
+    def with_singularity_bake(self, baking):
+        bake_parser = self.singularity_sub_parsers.add_parser(
+            'bake', help='Build singularity images')
+        bake_parser.add_argument(
+            '--input', '-i', dest='input_dir', required=True, help='directory of software definition yaml files to process')
+        bake_parser.add_argument(
+            '--output', '-o', dest='output_dir', required=True, help='output directory for images')
+        group = bake_parser.add_mutually_exclusive_group(required=True)
+        group.add_argument(
+            '--missing', '-m', dest='missing', default=False, action='store_true', help='build all missing images')
+        group.add_argument(
+            '--image-name', '-n', dest='images', default=[], action='append', help='Specific image to build')
+        bake_parser.set_defaults(func=baking)
+        return self
+
     def build(self):
         return self.parser
