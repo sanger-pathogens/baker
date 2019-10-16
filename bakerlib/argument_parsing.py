@@ -63,5 +63,19 @@ class ArgumentParserBuilder:
         bake_parser.set_defaults(func=baking)
         return self
 
+    def with_legacy_bake(self, legacy_baking):
+        bake_parser = self.singularity_sub_parsers.add_parser(
+            'legacy-bake', help='Build singularity images using singularity recipes and templates')
+        bake_parser.add_argument(
+            '--input', '-i', dest='input_dir', required=True, help='directory of software definition yaml files to process')
+        bake_parser.add_argument(
+            '--output', '-o', dest='output_dir', required=True, help='output directory for images')
+        bake_parser.add_argument(
+            '--templates', '-t', dest='template_dir', required=True, help='directory containing the jinja2 templates')
+        bake_parser.add_argument(
+            '--image-name', '-n', dest='images', required=True, action='append', help='Specific image to build')
+        bake_parser.set_defaults(func=legacy_baking)
+        return self
+
     def build(self):
         return self.parser

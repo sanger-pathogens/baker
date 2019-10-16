@@ -141,6 +141,59 @@ class TestSingularityBakeParser(unittest.TestCase):
         self.assertEqual(
             cm.exception.args[0], 'the following arguments are required: --config/-c')
 
+class TestSingularityLegacyBakeParser(unittest.TestCase):
+
+    def setUp(self):
+        self.under_test = ArgumentParserBuilder.new_instance(lambda: ErrorRaisingArgumentParser())\
+            .with_legacy_bake(mock_function)\
+            .build()
+
+    def test_parser_bake_image(self):
+        args = self.under_test.parse_args(
+            ['singularity', 'legacy-bake', '--input', 'dir1',  '--output', 'out', '--image-name', 'image1', '--templates', 'templates'])
+        self.assertEqual(args, argparse.Namespace(
+            input_dir='dir1', output_dir='out', images=['image1'], func=mock_function, template_dir='templates'))
+
+    def test_parser_bake_multiple_images(self):
+        args = self.under_test.parse_args(
+            ['singularity', 'legacy-bake', '--input', 'dir1',  '--output', 'out', '--image-name', 'image1', '--image-name', 'image2', '--templates', 'templates'])
+        self.assertEqual(args, argparse.Namespace(
+            input_dir='dir1', output_dir='out', images=['image1', 'image2'], func=mock_function, template_dir='templates'))
+
+    def test_parser_short_options_images(self):
+        args = self.under_test.parse_args(
+            ['singularity', 'legacy-bake', '-i', 'dir1', '-o', 'out', '-n', 'image1', '-n', 'image2', '-t', 'templates'])
+        self.assertEqual(args, argparse.Namespace(
+            input_dir='dir1', output_dir='out', images=['image1', 'image2'], func=mock_function, template_dir='templates'))
+
+    def test_fail_if_no_output_directory(self):
+        with self.assertRaises(ValueError) as cm:
+            self.under_test.parse_args(
+                ['singularity', 'legacy-bake', '--input', 'dir1', '--image-name', 'image1',  '--templates', 'templates'])
+        self.assertEqual(
+            cm.exception.args[0], 'the following arguments are required: --output/-o')
+
+    def test_fail_if_no_template_directory(self):
+        with self.assertRaises(ValueError) as cm:
+            self.under_test.parse_args(
+                ['singularity', 'legacy-bake', '--input', 'dir1', '--image-name', 'image1',  '--output', 'out'])
+        self.assertEqual(
+            cm.exception.args[0], 'the following arguments are required: --templates/-t')
+
+    def test_fail_if_no_input_directory(self):
+        with self.assertRaises(ValueError) as cm:
+            self.under_test.parse_args(
+                ['singularity', 'legacy-bake', '--output', 'out', '--image-name', 'image1', '--templates', 'templates'])
+        self.assertEqual(
+            cm.exception.args[0], 'the following arguments are required: --input/-i')
+
+    def test_fail_if_no_image(self):
+        with self.assertRaises(ValueError) as cm:
+            self.under_test.parse_args(
+                ['singularity', 'legacy-bake', '--input', 'dir1', '--output', 'out', '--templates', 'templates'])
+        self.assertEqual(
+            cm.exception.args[0], 'the following arguments are required: --image-name/-n')
+
 def mock_function():
     pass
 
