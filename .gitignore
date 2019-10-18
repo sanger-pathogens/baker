@@ -1,4 +1,6 @@
 .vagrant/
+.idea/
+venv/
 *.log
 build/
 dist/
