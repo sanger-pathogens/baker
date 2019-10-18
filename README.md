@@ -1,5 +1,5 @@
 # baker
-Baker is a tool that facilitates the installation and management of bioinformatics software.  It leverages container technology such as singularity and docker as well as Jinja2 template to build wrapper scripts
+Baker is a tool that facilitates the installation and management of bioinformatics software.  It leverages container technology such as singularity and docker as well as Jinja2 template to build wrapper scripts and singularity images
 
 [![Build Status](https://travis-ci.org/sanger-pathogens/baker.svg?branch=master)](https://travis-ci.org/sanger-pathogens/baker)   
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-brightgreen.svg)](https://github.com/sanger-pathogens/baker/blob/master/LICENSE)   

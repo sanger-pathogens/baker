@@ -65,7 +65,7 @@ class ArgumentParserBuilder:
 
     def with_legacy_bake(self, legacy_baking):
         bake_parser = self.singularity_sub_parsers.add_parser(
-            'legacy-bake', help='Build singularity images using singularity recipes and templates')
+            'legacy-bake', help='Build singularity images using singularity recipes and templates.  This is legacy, prefer the use of docker images')
         bake_parser.add_argument(
             '--input', '-i', dest='input_dir', required=True, help='directory of software definition yaml files to process')
         bake_parser.add_argument(
