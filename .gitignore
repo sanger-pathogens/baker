@@ -1,3 +1,5 @@
+.vagrant/
+*.log
 build/
 dist/
 .eggs/

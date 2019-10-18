@@ -41,6 +41,26 @@ docker run --rm -it -v /home:/home sangerpathogens/baker:0.0.1 baker.py -h
 ## Usage
 Please run ```baker.py -h``` for help
 
+## Legacy: building a singularity image based on templated singularity recipies
+Use the vagrant file provided to build a box with necessary dependencies.  Please ensure the singularity version is available in your target environment.  
+You can then execute as follow:
+```
+# Create a virtual environment and install baker:
+virtualenv baker
+source baker/bin/activate
+pip install git+https://github.com/sanger-pathogens/baker.git@v1.0.1
+
+# Create the necessary directory structure:
+mkdir input templates output
+
+# Copy the yaml files in input, the singularity templates in templates then execute
+baker.py singularity legacy-bake -i ~/input -o ~/output -t ~/templates -n <image name>
+
+# For example for paisnp 0.0.1=h6dfff17_0
+baker.py singularity legacy-bake -i ~/input -o ~/output -t ~/templates -n pairsnp-0.0.1=h6dfff17_0.simg
+```
+
+
 ## License
 Baker is free software, licensed under [GPLv3](https://github.com/sanger-pathogens/baker/blob/master/LICENSE).
 
