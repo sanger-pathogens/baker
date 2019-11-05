@@ -62,7 +62,6 @@ A_TEMPLATE_DIR = "A_TEMPLATE_DIR"
 A_FILE_MODE = 0o555
 
 
-
 class TestMissingImageBuilder(unittest.TestCase):
 
     def setUp(self):

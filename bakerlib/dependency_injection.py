@@ -59,7 +59,6 @@ class CachedProperty(object):
         return value
 
 
-
 class Action(enum.Enum):
     help = 2
     decorate = 2
@@ -178,7 +177,7 @@ class BakerDI(SingularityBakerDI, ImageRepositoryDI, ScriptTemplateRendererDI):
             Action.help: lambda: self.print_help(),
             Action.decorate: lambda: self._decorator,
             Action.singularity_bake: lambda:
-                self._singularity_missing_image_baker if self.missing else self._singularity_specified_image_baker,
+            self._singularity_missing_image_baker if self.missing else self._singularity_specified_image_baker,
             Action.singularity_check: lambda: self._singularity_checker,
             Action.singularity_legacy_bake: lambda: self._legacy_singularity_baker
         }

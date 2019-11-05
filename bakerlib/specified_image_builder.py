@@ -2,6 +2,7 @@ import logging
 
 _logger = logging.getLogger('specified_image_builder')
 
+
 class SpecifiedImageBuilder:
     def __init__(self, images, singularity_baker):
         self.images = images
@@ -14,5 +15,3 @@ class SpecifiedImageBuilder:
 
     def __call__(self):
         self.build_images()
-
-

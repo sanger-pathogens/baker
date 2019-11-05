@@ -14,7 +14,7 @@ class SingularityExecutor:
         output_image = "%s/%s" % (outdir, software["image"])
         environment = "" if config == [] else ';'.join(config) + ';'
         command = "rm -f '%s';%ssingularity build '%s' '%s'" % (
-        output_image, environment, output_image, software["url"])
+            output_image, environment, output_image, software["url"])
         _logger.debug("Executing command: %s" % command)
         self._shell(command)
         _logger.debug("Built image: %s", output_image)

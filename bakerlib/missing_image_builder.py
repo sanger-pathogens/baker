@@ -16,4 +16,3 @@ class MissingImageBuilder:
 
     def __call__(self):
         self.check()
-
