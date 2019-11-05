@@ -1,8 +1,9 @@
 import glob
-import ntpath
 import logging
+import ntpath
 
 _logger = logging.getLogger('softwares')
+
 
 class ImageRepository:
     def __init__(self, directory):
@@ -14,7 +15,3 @@ class ImageRepository:
         results = [ntpath.basename(f) for f in files]
         _logger.debug("Find following images: %s" % results)
         return results
-
-
-        
-

@@ -1,11 +1,8 @@
-import logging
-import re
-
 class SingularityChecker:
-    
+
     def __init__(self, missing_image_call=lambda s: None, unknown_image_call=lambda s: None):
-        self.missing_image_call =  missing_image_call
-        self.unknown_image_call =  unknown_image_call
+        self.missing_image_call = missing_image_call
+        self.unknown_image_call = unknown_image_call
 
     def check(self, softwares, images):
         softwares_images = [software["image"] for software in softwares]

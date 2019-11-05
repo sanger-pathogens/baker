@@ -1,17 +1,20 @@
-from yaml import load, SafeLoader, YAMLError
 from re import compile
+
+from yaml import load, SafeLoader, YAMLError
+
 
 class DockerConfigError(Exception):
     pass
+
 
 class DockerConfig:
 
     def __init__(self, config):
         try:
             with open(config, 'r') as input:
-                self.environments=load(input, Loader=SafeLoader)
+                self.environments = load(input, Loader=SafeLoader)
         except YAMLError:
-            raise DockerConfigError("Could not load yaml " +config)
+            raise DockerConfigError("Could not load yaml " + config)
 
     def environment_for(self, software):
         pattern = compile("^docker://(?P<server>[^/:]+).*$")

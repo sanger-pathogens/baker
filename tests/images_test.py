@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch
+
 from bakerlib.images import ImageRepository
 
 AN_OUTPUT_DIR = 'AN INPUT DIRECTORY'
@@ -7,12 +8,14 @@ AN_OUTPUT_DIR = 'AN INPUT DIRECTORY'
 AN_IMAGE = "software-version.simg"
 ANOTHER_IMAGE = "other-software-version.sif"
 
-def glob_side_effect(value): 
+
+def glob_side_effect(value):
     if value == AN_OUTPUT_DIR + "/*.simg":
-            return [AN_OUTPUT_DIR + '/' + AN_IMAGE]
+        return [AN_OUTPUT_DIR + '/' + AN_IMAGE]
     if value == AN_OUTPUT_DIR + "/*.sif":
         return [AN_OUTPUT_DIR + '/' + ANOTHER_IMAGE]
     return []
+
 
 class TestImageRepository(unittest.TestCase):
     def setUp(self):

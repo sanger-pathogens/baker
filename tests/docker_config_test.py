@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, call, mock_open
-from bakerlib.docker_config import DockerConfigError, DockerConfig
 
+from bakerlib.docker_config import DockerConfig
 
 AN_INPUT_DIR = 'AN INPUT DIRECTORY'
 ANOTHER_INPUT_DIR = 'ANOTHER INPUT DIRECTORY'
@@ -33,6 +33,7 @@ ANOTHER_SOFTWARE = {
 YET_ANOTHER_SOFTWARE = {
     "url": "not_docker://someurl2/othername:otherversion",
     "functions": ['function4', 'function5']}
+
 
 class TestDockerConfig(unittest.TestCase):
 

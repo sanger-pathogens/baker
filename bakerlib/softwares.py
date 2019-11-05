@@ -1,8 +1,8 @@
-import os
-import yaml
 import glob
 import logging
 import re
+
+import yaml
 
 _logger = logging.getLogger('softwares')
 
@@ -17,6 +17,7 @@ def _software_name_version_validation(software):
     if "version" not in software:
         raise InvalidSoftwareError("Version not in software " + software)
 
+
 def _function_enrichments(software):
     exported_functions = []
     for function in software["functions"]:
@@ -30,10 +31,11 @@ def _function_enrichments(software):
             exported_functions.append({"script_name": function, "executable": function, "args": []})
     software["exported_functions"] = exported_functions
 
+
 def _image_enrichment(software):
     if "image" not in software:
         software["image"] = software['name'] + \
-            '-' + software['version'] + '.simg'
+                            '-' + software['version'] + '.simg'
 
 
 def _url_enrichments(software):
@@ -47,7 +49,8 @@ def _url_enrichments(software):
                 software["version"] = match.group("version")
 
 
-def get_softwares(inputs, enrichments=[_url_enrichments, _software_name_version_validation, _image_enrichment, _function_enrichments]):
+def get_softwares(inputs, enrichments=[_url_enrichments, _software_name_version_validation, _image_enrichment,
+                                       _function_enrichments]):
     filenames = _list_yaml_files(inputs)
     _logger.debug("Yaml files discovered: %s", filenames)
     softwares = []

@@ -1,34 +1,23 @@
 import unittest
-
 from os.path import dirname, abspath
-from unittest.mock import MagicMock
-from bakerlib.templating import TemplateRenderer
+
+from jinja2 import Environment, FileSystemLoader
+
+from bakerlib.templating import ScriptTemplateRenderer
 
 DEFAULT_TEMPLATE = "default.template"
-CUSTOM_TEMPLATE = "generic_template.template"
-A_CUSTOM_TEMPLATE_BASED_SOFTWARE = {"name": "artemis",
-                                    "version": "18.0.3",
-                                    "function_template": CUSTOM_TEMPLATE,
-                                    "docker_image": "sangerpathogens/artemis:release-v18.0.3"
-                                    }
-A_DEFAULT_TEMPLATE_BASED_SOFTWARE = {
-    "url": "docker://someurl"}
+A_FUNCTION_TO_RENDER = {
+    "url": "docker://someurl",
+    "function": {"script_name": "script_name", "executable": "executable", "args": []}}
 
-A_SOFTWARE_FUNCTION = {"script_name": "script_name", "executable": "executable", "args": []}
+A_TEMPLATE = "A_TEMPLATE"
 
 
-class TestTemplateSelector(unittest.TestCase):
+class TestScriptTemplateRenderer(unittest.TestCase):
+
     def setUp(self):
-        self.under_test = TemplateRenderer.new_instance(
-            dirname(abspath(__file__)))
-
-    def test_should_render_custom_template_software(self):
-        actual = self.under_test.render(
-            A_CUSTOM_TEMPLATE_BASED_SOFTWARE, A_SOFTWARE_FUNCTION)
-        self.assertEqual(
-            actual, "generic_template\nartemis\n18.0.3\nexecutable")
+        self.under_test = ScriptTemplateRenderer(Environment(loader=FileSystemLoader(dirname(abspath(__file__)))))
 
     def test_should_render_default_template_software(self):
-        actual = self.under_test.render(
-            A_DEFAULT_TEMPLATE_BASED_SOFTWARE, A_SOFTWARE_FUNCTION)
+        actual = self.under_test.render(DEFAULT_TEMPLATE, A_FUNCTION_TO_RENDER)
         self.assertEqual(actual, "default\ndocker://someurl\nexecutable")

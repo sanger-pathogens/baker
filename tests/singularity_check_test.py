@@ -1,8 +1,7 @@
 import unittest
-import scripts
-
 from unittest.mock import MagicMock, call
-from bakerlib.singularity import SingularityChecker
+
+from bakerlib.singularity_check import SingularityChecker
 
 AN_IMAGE = "AN_IMAGE"
 ANOTHER_IMAGE = "ANOTHER_IMAGE"
@@ -39,7 +38,7 @@ class TestSingularityChecker(unittest.TestCase):
 
     def test_check_singularity_images(self):
         self.under_test.check([A_SOFTWARE, ANOTHER_SOFTWARE], [
-                              AN_IMAGE, ANOTHER_IMAGE])
+            AN_IMAGE, ANOTHER_IMAGE])
         self.assertEqual(self.mock_missing_images.call_count, 0)
         self.assertEqual(self.mock_unknown_images.call_count, 0)
 
@@ -47,10 +46,10 @@ class TestSingularityChecker(unittest.TestCase):
         self.under_test.check([A_SOFTWARE], [AN_IMAGE, ANOTHER_IMAGE])
         self.assertEqual(self.mock_missing_images.call_count, 0)
         self.assertCountEqual(self.mock_unknown_images.call_args_list, [
-                              call(ANOTHER_IMAGE)])
+            call(ANOTHER_IMAGE)])
 
     def test_check_singularity_images_missing_images(self):
         self.under_test.check([A_SOFTWARE, ANOTHER_SOFTWARE], [AN_IMAGE])
         self.assertCountEqual(self.mock_missing_images.call_args_list, [
-                              call(ANOTHER_IMAGE)])
+            call(ANOTHER_IMAGE)])
         self.assertEqual(self.mock_unknown_images.call_count, 0)

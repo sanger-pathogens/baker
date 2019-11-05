@@ -1,6 +1,7 @@
 import unittest
-from tempfile import NamedTemporaryFile, mkstemp
 from os import remove
+from tempfile import mkstemp
+
 from bakerlib.file_processing import add_if_not_there
 
 A_LINE = "A_LINE"
@@ -31,14 +32,14 @@ class TestFileProcessor(unittest.TestCase):
     def test_should_add_prefix(self):
         name = self._temp_file()
         add_if_not_there(name, A_LINE, prefix=[
-                         A_FIRST_PREFIX, A_SECOND_PREFIX])
+            A_FIRST_PREFIX, A_SECOND_PREFIX])
         self.assertFileContent(name, A_FIRST_PREFIX +
-                               '\n' + A_SECOND_PREFIX+'\n' + A_LINE + '\n')
+                               '\n' + A_SECOND_PREFIX + '\n' + A_LINE + '\n')
 
     def test_should_add_suffix(self):
         name = self._temp_file()
         add_if_not_there(name, A_LINE, suffix=[
-                         A_FIRST_SUFFIX, A_SECOND_SUFFIX])
+            A_FIRST_SUFFIX, A_SECOND_SUFFIX])
         self.assertFileContent(name, A_LINE + '\n' +
                                A_FIRST_SUFFIX + '\n' + A_SECOND_SUFFIX + '\n')
 
