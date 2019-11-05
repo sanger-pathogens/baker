@@ -6,12 +6,14 @@ from pkg_resources import get_distribution, DistributionNotFound
 from bakerlib.argument_parsing import ArgumentParserBuilder
 from bakerlib.decorator import Decorator
 from bakerlib.docker_config import DockerConfig
-from bakerlib.images import ImageRepository
-from bakerlib.missing_image_builder import MissingImageBuilder
-from bakerlib.singularity_build import SingularityBaker
+from bakerlib.image_comparator import ImageComparator
+from bakerlib.image_reconciler import ImageReconciler
+from bakerlib.image_repository import ImageRepository
+from bakerlib.singularity_build import SingularityBaker, SingularityExecutor
 from bakerlib.singularity_build_legacy import SingularityLegacyBaker
-from bakerlib.singularity_check import SingularityChecker
-from bakerlib.softwares import get_softwares
+from bakerlib.software_enrichments import url_enrichments, software_name_version_validation, function_enrichments, \
+    image_enrichment
+from bakerlib.software_repository import SoftwareRepository
 from bakerlib.specified_image_builder import SpecifiedImageBuilder
 from bakerlib.templating import ScriptTemplateRenderer
 
@@ -61,10 +63,10 @@ class CachedProperty(object):
 
 class Action(enum.Enum):
     help = 2
-    decorate = 2
-    singularity_check = 3
-    singularity_bake = 4
-    singularity_legacy_bake = 5
+    decorate = 3
+    singularity_check = 4
+    singularity_bake = 5
+    singularity_legacy_bake = 6
 
 
 class ParameterDI:
@@ -131,19 +133,28 @@ class ParameterDI:
 class SoftwareCatalogDI(ParameterDI):
 
     @CachedProperty
-    def software_catalog(self):
-        return get_softwares([self.input_dir])
+    def software_repository(self):
+        return SoftwareRepository(self.input_dir, self._software_enrichments)
+
+    @CachedProperty
+    def _software_enrichments(self):
+        return [url_enrichments, software_name_version_validation, image_enrichment, function_enrichments]
 
 
 class SingularityBakerDI(SoftwareCatalogDI):
 
     @CachedProperty
     def singularity_baker(self):
-        return SingularityBaker(self.output_dir, self._docker_config, self.software_catalog)
+        return SingularityBaker(self.output_dir, self._docker_config, self.software_repository,
+                                self._singularity_executor)
 
     @CachedProperty
     def _docker_config(self):
         return DockerConfig(self.config)
+
+    @CachedProperty
+    def _singularity_executor(self):
+        return SingularityExecutor()
 
 
 class ImageRepositoryDI(ParameterDI):
@@ -174,7 +185,7 @@ class BakerDI(SingularityBakerDI, ImageRepositoryDI, ScriptTemplateRendererDI):
     def command(self):
         action = self.action
         switcher = {
-            Action.help: lambda: self.print_help(),
+            Action.help: lambda: self.print_help,
             Action.decorate: lambda: self._decorator,
             Action.singularity_bake: lambda:
             self._singularity_missing_image_baker if self.missing else self._singularity_specified_image_baker,
@@ -185,18 +196,18 @@ class BakerDI(SingularityBakerDI, ImageRepositoryDI, ScriptTemplateRendererDI):
 
     @CachedProperty
     def _legacy_singularity_baker(self):
-        return SingularityLegacyBaker(self.output_dir, self.template_dir, self.software_catalog, self.images)
+        return SingularityLegacyBaker(self.output_dir, self.template_dir, self.software_repository, self.images)
 
     @CachedProperty
     def _singularity_checker(self):
-        return SingularityChecker(self.software_catalog, self.image_repository,
-                                  SingularityChecker(lambda s: print("missing %s" % s),
-                                                     lambda s: print("unknown %s" % s)))
+        return ImageReconciler(self.software_repository, self.image_repository,
+                               ImageComparator(lambda s: print("missing %s" % s),
+                                               lambda s: print("unknown %s" % s)))
 
     @CachedProperty
     def _singularity_missing_image_baker(self):
-        return MissingImageBuilder(self.software_catalog, self.image_repository,
-                                   SingularityChecker(lambda s: self.singularity_baker.bake(s), lambda s: None))
+        return ImageReconciler(self.software_repository, self.image_repository,
+                               ImageComparator(lambda s: self.singularity_baker.bake(s), lambda s: None))
 
     @CachedProperty
     def _singularity_specified_image_baker(self):
@@ -204,4 +215,4 @@ class BakerDI(SingularityBakerDI, ImageRepositoryDI, ScriptTemplateRendererDI):
 
     @CachedProperty
     def _decorator(self):
-        return Decorator(self.output_dir, self.script_template_renderer, self.software_catalog)
+        return Decorator(self.output_dir, self.script_template_renderer, self.software_repository)

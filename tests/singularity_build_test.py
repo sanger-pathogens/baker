@@ -29,8 +29,10 @@ class TestSingularityBaker(unittest.TestCase):
     def setUp(self):
         self.mock_config = MagicMock()
         self.mock_executor = MagicMock()
+        self.mock_software_repository = MagicMock()
+        self.mock_software_repository.get_software_catalog.return_value = [A_SOFTWARE, ANOTHER_SOFTWARE]
         self.mock_config.environment_for.side_effect = lambda arg: A_CONFIG if arg == A_SOFTWARE else []
-        self.under_test = SingularityBaker(AN_OUTPUT_DIR, self.mock_config, [A_SOFTWARE, ANOTHER_SOFTWARE],
+        self.under_test = SingularityBaker(AN_OUTPUT_DIR, self.mock_config, self.mock_software_repository,
                                            self.mock_executor)
 
     def test_should_bake_images(self):
@@ -53,8 +55,9 @@ class TestSingularityExecutor(unittest.TestCase):
     def setUp(self):
         self.under_test = SingularityExecutor()
         self.process_mock = MagicMock()
+        self.process_mock.returncode = 0
 
-    @patch('subprocess.Popen')
+    @patch('bakerlib.singularity_build.Popen')
     def test_execute_with_config(self, mock_subproc_popen):
         mock_subproc_popen.return_value = self.process_mock
         self.under_test.execute(AN_OUTPUT_DIR, A_CONFIG, A_SOFTWARE)
@@ -62,10 +65,17 @@ class TestSingularityExecutor(unittest.TestCase):
         self.assertCountEqual(mock_subproc_popen.call_args_list, [call(expected_command, shell=True)])
         self.assertEqual(self.process_mock.wait.call_count, 1)
 
-    @patch('subprocess.Popen')
+    @patch('bakerlib.singularity_build.Popen')
     def test_execute_without_config(self, mock_subproc_popen):
         mock_subproc_popen.return_value = self.process_mock
         self.under_test.execute(AN_OUTPUT_DIR, [], A_SOFTWARE)
         expected_command = "rm -f 'AN_OUTPUT_DIR/AN_IMAGE';singularity build 'AN_OUTPUT_DIR/AN_IMAGE' 'A_URL'"
         self.assertCountEqual(mock_subproc_popen.call_args_list, [call(expected_command, shell=True)])
         self.assertEqual(self.process_mock.wait.call_count, 1)
+
+    @patch('bakerlib.singularity_build.Popen')
+    def test_should_fail_if_process_fails(self, mock_subproc_popen):
+        self.process_mock.returncode = 1
+        mock_subproc_popen.return_value = self.process_mock
+        with self.assertRaises(SingularityBakingError) as _:
+            self.under_test.execute(AN_OUTPUT_DIR, [], A_SOFTWARE)

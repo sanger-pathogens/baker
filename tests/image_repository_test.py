@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from bakerlib.images import ImageRepository
+from bakerlib.image_repository import ImageRepository
 
 AN_OUTPUT_DIR = 'AN INPUT DIRECTORY'
 

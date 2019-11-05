@@ -12,10 +12,10 @@ class SingularityLegacyBakingError(Exception):
 
 class SingularityLegacyBaker:
 
-    def __init__(self, outdir, template_dir, softwares, images):
+    def __init__(self, outdir, template_dir, software_repository, images):
         self.outdir = outdir
         self.template_dir = template_dir
-        self.softwares = {software["image"]: software for software in softwares}
+        self.software_map = {software["image"]: software for software in software_repository.get_software_catalog()}
         self.images = images
 
     def bake_all(self):
@@ -27,7 +27,7 @@ class SingularityLegacyBaker:
         self.bake_all()
 
     def _bake(self, image):
-        software = self.softwares.get(image)
+        software = self.software_map.get(image)
         if software is None:
             raise SingularityLegacyBakingError("Could not find software for image " + image)
 
@@ -48,4 +48,4 @@ class SingularityLegacyBaker:
         p = subprocess.Popen(command, shell=True)
         p.wait()
         if p.returncode != 0:
-            raise SingularityLegacyBakingError("singularity process failed while building " + command)
+            raise SingularityLegacyBakingError("singularity process failed while building %s" % command)

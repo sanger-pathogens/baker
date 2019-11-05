@@ -8,13 +8,13 @@ SCRIPT_TEMPLATE = "default.template"
 
 class Decorator:
 
-    def __init__(self, output_dir, renderer, software_catalog):
+    def __init__(self, output_dir, renderer, software_repository):
         self.output_dir = output_dir
         self.renderer = renderer
-        self.software_catalog = software_catalog
+        self.software_repository = software_repository
 
     def decorate(self):
-        for software in self.software_catalog:
+        for software in self.software_repository.get_software_catalog():
             _logger.debug("Processing %s version %s", software["name"], software["version"])
             software_directory = "%s/%s" % (software["name"], software["version"])
             relative_wrapper_directory = "%s/wrappers" % software_directory

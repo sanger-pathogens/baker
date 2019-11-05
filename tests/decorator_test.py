@@ -66,8 +66,10 @@ class TestDecorator(unittest.TestCase):
 
     def setUp(self):
         self.mock_renderer = MagicMock()
+        self.mock_software_repository = MagicMock()
+        self.mock_software_repository.get_software_catalog.return_value = [A_SOFTWARE, ANOTHER_SOFTWARE]
         self.under_test = Decorator(output_dir=AN_OUTPUT_DIR, renderer=self.mock_renderer,
-                                    software_catalog=[A_SOFTWARE, ANOTHER_SOFTWARE])
+                                    software_repository=self.mock_software_repository)
 
     def test_should_decorate_softwares(self):
         self.under_test.decorate()
