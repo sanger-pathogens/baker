@@ -21,14 +21,15 @@ class ArgumentParserBuilder:
 
     def with_verbose(self):
         self.parser.add_argument(
-            '--verbose','-v', dest='verbose', default=False, action='store_true')
+            '--verbose', '-v', dest='verbose', default=False, action='store_true')
         return self
 
     def with_decorating(self, decorating):
         decorate_parser = self.subparsers.add_parser(
             'decorate', help='Generate wrappers for all softwares')
         decorate_parser.add_argument(
-            '--input', '-i', dest='input_dir', required=True, help='directory of software definition yaml files to process')
+            '--input', '-i', dest='input_dir', required=True,
+            help='directory of software definition yaml files to process')
         decorate_parser.add_argument(
             '--output', '-o', dest='output_dir', required=True, help='output directory for configurations and wrappers')
         decorate_parser.add_argument(
@@ -40,7 +41,8 @@ class ArgumentParserBuilder:
         reconcile_parser = self.singularity_sub_parsers.add_parser(
             'check', help='Reconcile singularity images againts the software lists')
         reconcile_parser.add_argument(
-            '--input', '-i', dest='input_dir', required=True, help='directory of software definition yaml files to process')
+            '--input', '-i', dest='input_dir', required=True,
+            help='directory of software definition yaml files to process')
         reconcile_parser.add_argument(
             '--output', '-o', dest='output_dir', required=True, help='output directory for images')
         reconcile_parser.set_defaults(func=reconciling)
@@ -50,7 +52,8 @@ class ArgumentParserBuilder:
         bake_parser = self.singularity_sub_parsers.add_parser(
             'bake', help='Build singularity images')
         bake_parser.add_argument(
-            '--input', '-i', dest='input_dir', required=True, help='directory of software definition yaml files to process')
+            '--input', '-i', dest='input_dir', required=True,
+            help='directory of software definition yaml files to process')
         bake_parser.add_argument(
             '--output', '-o', dest='output_dir', required=True, help='output directory for images')
         bake_parser.add_argument(
@@ -65,9 +68,11 @@ class ArgumentParserBuilder:
 
     def with_legacy_bake(self, legacy_baking):
         bake_parser = self.singularity_sub_parsers.add_parser(
-            'legacy-bake', help='Build singularity images using singularity recipes and templates.  This is legacy, prefer the use of docker images')
+            'legacy-bake',
+            help='Build singularity images using singularity recipes and templates.  This is legacy, prefer the use of docker images')
         bake_parser.add_argument(
-            '--input', '-i', dest='input_dir', required=True, help='directory of software definition yaml files to process')
+            '--input', '-i', dest='input_dir', required=True,
+            help='directory of software definition yaml files to process')
         bake_parser.add_argument(
             '--output', '-o', dest='output_dir', required=True, help='output directory for images')
         bake_parser.add_argument(

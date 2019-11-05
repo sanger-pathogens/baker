@@ -1,34 +1,38 @@
 #!/usr/bin/env python3
 
-import argparse
-import sys
-import os
 import logging
-from bakerlib.argument_parsing import ArgumentParserBuilder
-from bakerlib.softwares import get_softwares
-from bakerlib.main import decorate, get_version, singularity_check, singularity_bake, singularity_legacy_bake
+import sys
+
+from bakerlib.dependency_injection import BakerDI
+
+LOG_FORMAT = '%(asctime)s\t%(name)s\t{%(pathname)s:%(lineno)d}\t%(levelname)s\t%(message)s'
 
 
-parser = ArgumentParserBuilder.new_instance()\
-    .with_decorating(decorate)\
-    .with_version(get_version)\
-    .with_singularity_check(singularity_check)\
-    .with_singularity_bake(singularity_bake)\
-    .with_legacy_bake(singularity_legacy_bake)\
-    .with_verbose()\
-    .build()
-arguments = parser.parse_args()
-parameters = dict(vars(arguments))
-level=logging.DEBUG
-if hasattr(arguments, "verbose"):
-    del parameters["verbose"]
-    level=logging.DEBUG if arguments.verbose else logging.INFO
+def reconfigure_logs(verbose):
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(level=level, format=LOG_FORMAT)
 
-logging.basicConfig(level=level,
-                    format='%(asctime)s\t%(name)s\t{%(pathname)s:%(lineno)d}\t%(levelname)s\t%(message)s')
 
-if hasattr(arguments, "func"):
-    del parameters["func"]
-    arguments.func(**parameters)
-else:
-    parser.print_help()
+def main():
+    log = None
+    try:
+        container = BakerDI()
+        reconfigure_logs(container.verbose)
+        log = logging.getLogger('main')
+        command = container.command
+        command()
+        return 0
+    except Exception as err:
+        if log is not None:
+            log.exception('Unexpected error caught:')
+        else:
+            sys.stderr.write('ERROR: %sn' % str(err))
+        return 1
+
+
+def basic_logs():
+    logging.basicConfig(level=logging.CRITICAL, format=LOG_FORMAT)
+
+
+if __name__ == '__main__':
+    sys.exit(main())

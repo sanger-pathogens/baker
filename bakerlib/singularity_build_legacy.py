@@ -1,21 +1,33 @@
-from logging import getLogger
-from jinja2 import Environment, FileSystemLoader
 import subprocess
+from logging import getLogger
+
+from jinja2 import Environment, FileSystemLoader
 
 _logger = getLogger("singularity_legacy")
+
 
 class SingularityLegacyBakingError(Exception):
     pass
 
+
 class SingularityLegacyBaker:
 
-    def __init__(self, outdir, template_dir, softwares):
+    def __init__(self, outdir, template_dir, software_repository, images):
         self.outdir = outdir
         self.template_dir = template_dir
-        self.softwares = {software["image"]:software for software in softwares}
+        self.software_map = {software["image"]: software for software in software_repository.get_software_catalog()}
+        self.images = images
 
-    def bake(self, image):
-        software = self.softwares.get(image)
+    def bake_all(self):
+        _logger.debug("Building images %s" % self.images)
+        for image in self.images:
+            self._bake(image)
+
+    def __call__(self):
+        self.bake_all()
+
+    def _bake(self, image):
+        software = self.software_map.get(image)
         if software is None:
             raise SingularityLegacyBakingError("Could not find software for image " + image)
 
@@ -31,6 +43,9 @@ class SingularityLegacyBaker:
         self._shell("rm -f '%s';singularity build --fakeroot '%s' '%s'" % (output_image, output_image, recipe))
         _logger.debug("Built image: %s", output_image)
 
-    def _shell(self, command):
+    @staticmethod
+    def _shell(command):
         p = subprocess.Popen(command, shell=True)
         p.wait()
+        if p.returncode != 0:
+            raise SingularityLegacyBakingError("singularity process failed while building %s" % command)
