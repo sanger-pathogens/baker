@@ -15,6 +15,7 @@ from bakerlib.software_enrichments import url_enrichments, software_name_version
     image_enrichment
 from bakerlib.software_repository import SoftwareRepository
 from bakerlib.specified_image_builder import SpecifiedImageBuilder
+from bakerlib.template_file_loader import TemplateFileLoader
 from bakerlib.templating import ScriptTemplateRenderer
 
 _missing = object()
@@ -70,8 +71,6 @@ class Action(enum.Enum):
 
 
 SCRIPT_FILE_MODE = 0o555
-SCRIPT_TEMPLATE = "default.template"
-
 
 class ParameterDI:
 
@@ -113,7 +112,7 @@ class ParameterDI:
 
     @CachedProperty
     def template(self):
-        return SCRIPT_TEMPLATE
+        return self._parameters["template"]
 
     @CachedProperty
     def file_mode(self):
@@ -184,7 +183,7 @@ class ScriptTemplateRendererDI(ParameterDI):
 
     @CachedProperty
     def _jinja_file_system_loader(self):
-        return FileSystemLoader(self.template_dir)
+        return TemplateFileLoader()
 
     @CachedProperty
     def _jinja_environment(self):

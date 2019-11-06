@@ -33,7 +33,7 @@ class ArgumentParserBuilder:
         decorate_parser.add_argument(
             '--output', '-o', dest='output_dir', required=True, help='output directory for configurations and wrappers')
         decorate_parser.add_argument(
-            '--templates', '-t', dest='template_dir', required=True, help='directory containing the jinja2 templates')
+            '--template', '-t', dest='template', required=True, help='the jinja2 template to use to decorate')
         decorate_parser.set_defaults(func=decorating)
         return self
 
