@@ -70,8 +70,6 @@ class Action(enum.Enum):
     singularity_legacy_bake = 6
 
 
-SCRIPT_FILE_MODE = 0o555
-
 class ParameterDI:
 
     @CachedProperty
@@ -116,7 +114,7 @@ class ParameterDI:
 
     @CachedProperty
     def file_mode(self):
-        return SCRIPT_FILE_MODE
+        return self._parameters["file_mode"]
 
     @CachedProperty
     def _parameters(self):

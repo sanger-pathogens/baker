@@ -13,36 +13,43 @@ class TestDecorateParser(unittest.TestCase):
 
     def test_parser_single_directory(self):
         args = self.under_test.parse_args(
-            ['decorate', '--template', 'template', '--output', 'out', '--input', 'dir1'])
+            ['decorate', '--template', 'template', '--output', 'out', '--input', 'dir1', '--file-mode', '0o755'])
         self.assertEqual(args, argparse.Namespace(
-            input_dir='dir1', template='template', output_dir='out', func=mock_function))
+            input_dir='dir1', template='template', output_dir='out', file_mode=0o755, func=mock_function))
 
     def test_parser_short_options(self):
         args = self.under_test.parse_args(
-            ['decorate', '-t', 'template', '-o', 'out', '-i', 'dir1'])
+            ['decorate', '-t', 'template', '-o', 'out', '-i', 'dir1', '-f', '0o755'])
         self.assertEqual(args, argparse.Namespace(
-            input_dir='dir1', template='template', output_dir='out', func=mock_function))
+            input_dir='dir1', template='template', output_dir='out', file_mode=0o755, func=mock_function))
 
     def test_fail_if_no_input_directory(self):
         with self.assertRaises(ValueError) as cm:
             self.under_test.parse_args(
-                ['decorate', '--template', 'template', '--output', 'out'])
+                ['decorate', '--template', 'template', '--output', 'out', '--file-mode', '0o755'])
         self.assertEqual(
             cm.exception.args[0], 'the following arguments are required: --input/-i')
 
     def test_fail_if_no_output_directory(self):
         with self.assertRaises(ValueError) as cm:
             self.under_test.parse_args(
-                ['decorate', '--template', 'template', '--input', 'dir1'])
+                ['decorate', '--template', 'template', '--input', 'dir1', '--file-mode', '0o755'])
         self.assertEqual(
             cm.exception.args[0], 'the following arguments are required: --output/-o')
 
     def test_fail_if_no_template_directory(self):
         with self.assertRaises(ValueError) as cm:
             self.under_test.parse_args(
-                ['decorate', '--output', 'out', '--input', 'dir1'])
+                ['decorate', '--output', 'out', '--input', 'dir1', '--file-mode', '0o755'])
         self.assertEqual(
             cm.exception.args[0], 'the following arguments are required: --template/-t')
+
+    def test_fail_if_no_file_mode(self):
+        with self.assertRaises(ValueError) as cm:
+            self.under_test.parse_args(
+                ['decorate', '--template', 'template', '--output', 'out', '--input', 'dir1'])
+        self.assertEqual(
+            cm.exception.args[0], 'the following arguments are required: --file-mode/-f')
 
 
 class TestSingularityCheckParser(unittest.TestCase):

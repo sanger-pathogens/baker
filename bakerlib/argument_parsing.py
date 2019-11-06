@@ -34,6 +34,9 @@ class ArgumentParserBuilder:
             '--output', '-o', dest='output_dir', required=True, help='output directory for configurations and wrappers')
         decorate_parser.add_argument(
             '--template', '-t', dest='template', required=True, help='the jinja2 template to use to decorate')
+        decorate_parser.add_argument(
+            '--file-mode', '-f', dest='file_mode', required=True, type=lambda x: int(x, 0),
+            help='the mode/permission of the generated output files, ie 0o555')
         decorate_parser.set_defaults(func=decorating)
         return self
 
