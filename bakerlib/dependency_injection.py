@@ -1,20 +1,22 @@
 import enum
 
-from jinja2 import FileSystemLoader, Environment
+from jinja2 import Environment
 from pkg_resources import get_distribution, DistributionNotFound
 
 from bakerlib.argument_parsing import ArgumentParserBuilder
-from bakerlib.decorator import Decorator
 from bakerlib.docker_config import DockerConfig
+from bakerlib.function_decorator import FunctionDecorator
 from bakerlib.image_comparator import ImageComparator
 from bakerlib.image_reconciler import ImageReconciler
 from bakerlib.image_repository import ImageRepository
 from bakerlib.singularity_build import SingularityBaker, SingularityExecutor
 from bakerlib.singularity_build_legacy import SingularityLegacyBaker
+from bakerlib.software_decorator import SoftwareDecorator
 from bakerlib.software_enrichments import url_enrichments, software_name_version_validation, function_enrichments, \
     image_enrichment
 from bakerlib.software_repository import SoftwareRepository
 from bakerlib.specified_image_builder import SpecifiedImageBuilder
+from bakerlib.template_file_loader import TemplateFileLoader
 from bakerlib.templating import ScriptTemplateRenderer
 
 _missing = object()
@@ -62,8 +64,9 @@ class CachedProperty(object):
 
 
 class Action(enum.Enum):
-    help = 2
-    decorate = 3
+    help = 1
+    function_decorate = 2
+    software_decorate = 3
     singularity_check = 4
     singularity_bake = 5
     singularity_legacy_bake = 6
@@ -82,6 +85,10 @@ class ParameterDI:
     @CachedProperty
     def output_dir(self):
         return self._parameters["output_dir"]
+
+    @CachedProperty
+    def output_format(self):
+        return self._parameters["output_format"]
 
     @CachedProperty
     def input_dir(self):
@@ -108,6 +115,14 @@ class ParameterDI:
         return self._parameters["verbose"]
 
     @CachedProperty
+    def template(self):
+        return self._parameters["template"]
+
+    @CachedProperty
+    def file_mode(self):
+        return self._parameters["file_mode"]
+
+    @CachedProperty
     def _parameters(self):
         return dict(vars(self._parameter_parser.parse_args()))
 
@@ -121,7 +136,8 @@ class ParameterDI:
     @CachedProperty
     def _parameter_parser(self):
         return ArgumentParserBuilder.new_instance() \
-            .with_decorating(Action.decorate) \
+            .with_function_decorating(Action.function_decorate) \
+            .with_software_decorating(Action.software_decorate) \
             .with_version(lambda: self._baker_version) \
             .with_singularity_check(Action.singularity_check) \
             .with_singularity_bake(Action.singularity_bake) \
@@ -168,11 +184,11 @@ class ScriptTemplateRendererDI(ParameterDI):
 
     @CachedProperty
     def script_template_renderer(self):
-        return ScriptTemplateRenderer(self._jinja_environment)
+        return ScriptTemplateRenderer(self._jinja_environment, self.template, self.file_mode)
 
     @CachedProperty
     def _jinja_file_system_loader(self):
-        return FileSystemLoader(self.template_dir)
+        return TemplateFileLoader()
 
     @CachedProperty
     def _jinja_environment(self):
@@ -186,7 +202,8 @@ class BakerDI(SingularityBakerDI, ImageRepositoryDI, ScriptTemplateRendererDI):
         action = self.action
         switcher = {
             Action.help: lambda: self.print_help,
-            Action.decorate: lambda: self._decorator,
+            Action.function_decorate: lambda: self._function_decorator,
+            Action.software_decorate: lambda: self._software_decorator,
             Action.singularity_bake: lambda:
             self._singularity_missing_image_baker if self.missing else self._singularity_specified_image_baker,
             Action.singularity_check: lambda: self._singularity_checker,
@@ -214,5 +231,9 @@ class BakerDI(SingularityBakerDI, ImageRepositoryDI, ScriptTemplateRendererDI):
         return SpecifiedImageBuilder(self.images, self.singularity_baker)
 
     @CachedProperty
-    def _decorator(self):
-        return Decorator(self.output_dir, self.script_template_renderer, self.software_repository)
+    def _function_decorator(self):
+        return FunctionDecorator(self.output_format, self.script_template_renderer, self.software_repository)
+
+    @CachedProperty
+    def _software_decorator(self):
+        return SoftwareDecorator(self.output_format, self.script_template_renderer, self.software_repository)
