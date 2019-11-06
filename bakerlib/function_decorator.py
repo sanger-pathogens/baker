@@ -2,11 +2,8 @@ import logging
 
 _logger = logging.getLogger('decorator')
 
-SCRIPT_FILE_MODE = 0o555
-SCRIPT_TEMPLATE = "default.template"
 
-
-class Decorator:
+class FunctionDecorator:
 
     def __init__(self, output_dir, renderer, software_repository):
         self.output_dir = output_dir
@@ -22,8 +19,7 @@ class Decorator:
             for function in software['exported_functions']:
                 to_render = dict(software)
                 to_render["function"] = function
-                self.renderer.create_file(wrapper_directory, function["script_name"], to_render, SCRIPT_TEMPLATE,
-                                          SCRIPT_FILE_MODE)
+                self.renderer.create_file(wrapper_directory, function["script_name"], to_render)
 
     def __call__(self):
         self.decorate()

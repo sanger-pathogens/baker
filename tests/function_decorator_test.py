@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import MagicMock, call
 
-from bakerlib.decorator import Decorator, SCRIPT_TEMPLATE, SCRIPT_FILE_MODE
+from bakerlib.function_decorator import FunctionDecorator
 
 AN_IMAGE = "AN_IMAGE"
 ANOTHER_IMAGE = "ANOTHER_IMAGE"
@@ -68,16 +68,16 @@ class TestDecorator(unittest.TestCase):
         self.mock_renderer = MagicMock()
         self.mock_software_repository = MagicMock()
         self.mock_software_repository.get_software_catalog.return_value = [A_SOFTWARE, ANOTHER_SOFTWARE]
-        self.under_test = Decorator(output_dir=AN_OUTPUT_DIR, renderer=self.mock_renderer,
-                                    software_repository=self.mock_software_repository)
+        self.under_test = FunctionDecorator(output_dir=AN_OUTPUT_DIR, renderer=self.mock_renderer,
+                                            software_repository=self.mock_software_repository)
 
     def test_should_decorate_softwares(self):
         self.under_test.decorate()
         self.assertCountEqual(self.mock_renderer.create_file.call_args_list,
                               [
                                   call('AN_OUTPUT_DIR/artemis/18.0.3/wrappers',
-                                       'art', A_FUNCTION_TO_RENDER_1, SCRIPT_TEMPLATE, SCRIPT_FILE_MODE),
+                                       'art', A_FUNCTION_TO_RENDER_1),
                                   call('AN_OUTPUT_DIR/artemis/18.0.3/wrappers',
-                                       'act', A_FUNCTION_TO_RENDER_2, SCRIPT_TEMPLATE, SCRIPT_FILE_MODE),
+                                       'act', A_FUNCTION_TO_RENDER_2),
                                   call('AN_OUTPUT_DIR/gff3toembl/1.1.4/wrappers', 'interesting',
-                                       ANOTHER_FUNCTION_TO_RENDER, SCRIPT_TEMPLATE, SCRIPT_FILE_MODE)])
+                                       ANOTHER_FUNCTION_TO_RENDER)])

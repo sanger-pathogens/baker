@@ -4,8 +4,8 @@ from jinja2 import FileSystemLoader, Environment
 from pkg_resources import get_distribution, DistributionNotFound
 
 from bakerlib.argument_parsing import ArgumentParserBuilder
-from bakerlib.decorator import Decorator
 from bakerlib.docker_config import DockerConfig
+from bakerlib.function_decorator import FunctionDecorator
 from bakerlib.image_comparator import ImageComparator
 from bakerlib.image_reconciler import ImageReconciler
 from bakerlib.image_repository import ImageRepository
@@ -69,6 +69,10 @@ class Action(enum.Enum):
     singularity_legacy_bake = 6
 
 
+SCRIPT_FILE_MODE = 0o555
+SCRIPT_TEMPLATE = "default.template"
+
+
 class ParameterDI:
 
     @CachedProperty
@@ -106,6 +110,14 @@ class ParameterDI:
     @CachedProperty
     def verbose(self):
         return self._parameters["verbose"]
+
+    @CachedProperty
+    def template(self):
+        return SCRIPT_TEMPLATE
+
+    @CachedProperty
+    def file_mode(self):
+        return SCRIPT_FILE_MODE
 
     @CachedProperty
     def _parameters(self):
@@ -168,7 +180,7 @@ class ScriptTemplateRendererDI(ParameterDI):
 
     @CachedProperty
     def script_template_renderer(self):
-        return ScriptTemplateRenderer(self._jinja_environment)
+        return ScriptTemplateRenderer(self._jinja_environment, self.template, self.file_mode)
 
     @CachedProperty
     def _jinja_file_system_loader(self):
@@ -215,4 +227,4 @@ class BakerDI(SingularityBakerDI, ImageRepositoryDI, ScriptTemplateRendererDI):
 
     @CachedProperty
     def _decorator(self):
-        return Decorator(self.output_dir, self.script_template_renderer, self.software_repository)
+        return FunctionDecorator(self.output_dir, self.script_template_renderer, self.software_repository)
