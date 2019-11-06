@@ -15,13 +15,13 @@ class TestDecorateFunctionParser(unittest.TestCase):
         args = self.under_test.parse_args(
             ['decorate', 'function', '--template', 'template', '--output', 'out', '--input', 'dir1', '--file-mode', '0o755'])
         self.assertEqual(args, argparse.Namespace(
-            input_dir='dir1', template='template', output_dir='out', file_mode=0o755, func=mock_function))
+            input_dir='dir1', template='template', output_format='out', file_mode=0o755, func=mock_function))
 
     def test_decorate_function_short_options(self):
         args = self.under_test.parse_args(
             ['decorate', 'function', '-t', 'template', '-o', 'out', '-i', 'dir1', '-f', '0o755'])
         self.assertEqual(args, argparse.Namespace(
-            input_dir='dir1', template='template', output_dir='out', file_mode=0o755, func=mock_function))
+            input_dir='dir1', template='template', output_format='out', file_mode=0o755, func=mock_function))
 
     def test_fail_if_no_input_directory(self):
         with self.assertRaises(ValueError) as cm:
@@ -63,13 +63,13 @@ class TestDecorateSoftwareParser(unittest.TestCase):
         args = self.under_test.parse_args(
             ['decorate', 'software', '--template', 'template', '--output', 'out', '--input', 'dir1', '--file-mode', '0o755'])
         self.assertEqual(args, argparse.Namespace(
-            input_dir='dir1', template='template', output_dir='out', file_mode=0o755, func=mock_function))
+            input_dir='dir1', template='template', output_format='out', file_mode=0o755, func=mock_function))
 
     def test_decorate_short_options(self):
         args = self.under_test.parse_args(
             ['decorate', 'software', '-t', 'template', '-o', 'out', '-i', 'dir1', '-f', '0o755'])
         self.assertEqual(args, argparse.Namespace(
-            input_dir='dir1', template='template', output_dir='out', file_mode=0o755, func=mock_function))
+            input_dir='dir1', template='template', output_format='out', file_mode=0o755, func=mock_function))
 
     def test_fail_if_no_input_directory(self):
         with self.assertRaises(ValueError) as cm:

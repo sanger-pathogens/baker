@@ -87,6 +87,10 @@ class ParameterDI:
         return self._parameters["output_dir"]
 
     @CachedProperty
+    def output_format(self):
+        return self._parameters["output_format"]
+
+    @CachedProperty
     def input_dir(self):
         return self._parameters["input_dir"]
 
@@ -228,8 +232,8 @@ class BakerDI(SingularityBakerDI, ImageRepositoryDI, ScriptTemplateRendererDI):
 
     @CachedProperty
     def _function_decorator(self):
-        return FunctionDecorator(self.output_dir, self.script_template_renderer, self.software_repository)
+        return FunctionDecorator(self.output_format, self.script_template_renderer, self.software_repository)
 
     @CachedProperty
     def _software_decorator(self):
-        return SoftwareDecorator(self.output_dir, self.script_template_renderer, self.software_repository)
+        return SoftwareDecorator(self.output_format, self.script_template_renderer, self.software_repository)

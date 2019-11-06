@@ -41,11 +41,11 @@ class ArgumentParserBuilder:
 
     @staticmethod
     def _add_decoration_arguments(decorate_parser, decorating):
-        decorate_parser.add_argument(
-            '--input', '-i', dest='input_dir', required=True,
-            help='directory of software catalog (yaml files to process)')
-        decorate_parser.add_argument(
-            '--output', '-o', dest='output_dir', required=True, help='output directory for generated files')
+        decorate_parser.add_argument('--input', '-i', dest='input_dir', required=True,
+                                     help='directory of software catalog (yaml files to process)')
+        decorate_parser.add_argument('--output', '-o', dest='output_format', required=True,
+                                     help='output format used for generated files, ie /some/path/{name}/{version}.txt'
+                                          '.  Function atributes need double curly brackets: {{script_name}}')
         decorate_parser.add_argument(
             '--template', '-t', dest='template', required=True, help='the jinja2 template to use to decorate')
         decorate_parser.add_argument(

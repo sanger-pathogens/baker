@@ -1,6 +1,6 @@
 import logging
 from os import makedirs, chmod
-
+from os.path import dirname
 _logger = logging.getLogger('templating')
 
 
@@ -15,11 +15,11 @@ class ScriptTemplateRenderer:
         renderer = self.jinja2_environment.get_template(self.template)
         return renderer.render(**parameters)
 
-    def create_file(self, directory, name, parameters):
+    def create_file(self, name, parameters):
+        directory = dirname(name)
         content = self.render(parameters)
         makedirs(directory, exist_ok=True)
-        filename = "%s/%s" % (directory, name)
-        with open(filename, 'w') as bash_wrapper:
+        with open(name, 'w') as bash_wrapper:
             print(content, file=bash_wrapper)
-        chmod(filename, self.file_mode)
+        chmod(name, self.file_mode)
         _logger.debug("Created file %s", name)
