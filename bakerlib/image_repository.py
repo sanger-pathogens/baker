@@ -15,3 +15,5 @@ class ImageRepository:
         results = [ntpath.basename(f) for f in files]
         _logger.debug("Find following images: %s" % results)
         return results
+
+
