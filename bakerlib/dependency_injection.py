@@ -4,6 +4,7 @@ from jinja2 import Environment
 from pkg_resources import get_distribution, DistributionNotFound
 
 from bakerlib.argument_parsing import ArgumentParserBuilder
+from bakerlib.catalog_decorator import CatalogDecorator
 from bakerlib.docker_config import DockerConfig
 from bakerlib.function_decorator import FunctionDecorator
 from bakerlib.image_comparator import ImageComparator
@@ -67,9 +68,10 @@ class Action(enum.Enum):
     help = 1
     function_decorate = 2
     software_decorate = 3
-    singularity_check = 4
-    singularity_bake = 5
-    singularity_legacy_bake = 6
+    catalog_decorate = 4
+    singularity_check = 5
+    singularity_bake = 6
+    singularity_legacy_bake = 7
 
 
 class ParameterDI:
@@ -138,7 +140,7 @@ class ParameterDI:
         return ArgumentParserBuilder.new_instance() \
             .with_function_decorating(Action.function_decorate) \
             .with_software_decorating(Action.software_decorate) \
-            .with_version(lambda: self._baker_version) \
+            .with_catalog_decorating(Action.catalog_decorate) \
             .with_singularity_check(Action.singularity_check) \
             .with_singularity_bake(Action.singularity_bake) \
             .with_legacy_bake(Action.singularity_legacy_bake) \
@@ -204,6 +206,7 @@ class BakerDI(SingularityBakerDI, ImageRepositoryDI, ScriptTemplateRendererDI):
             Action.help: lambda: self.print_help,
             Action.function_decorate: lambda: self._function_decorator,
             Action.software_decorate: lambda: self._software_decorator,
+            Action.catalog_decorate: lambda: self._catalog_decorator,
             Action.singularity_bake: lambda:
             self._singularity_missing_image_baker if self.missing else self._singularity_specified_image_baker,
             Action.singularity_check: lambda: self._singularity_checker,
@@ -233,6 +236,10 @@ class BakerDI(SingularityBakerDI, ImageRepositoryDI, ScriptTemplateRendererDI):
     @CachedProperty
     def _function_decorator(self):
         return FunctionDecorator(self.output_format, self.script_template_renderer, self.software_repository)
+
+    @CachedProperty
+    def _catalog_decorator(self):
+        return CatalogDecorator(self.output_format, self.script_template_renderer, self.software_repository)
 
     @CachedProperty
     def _software_decorator(self):

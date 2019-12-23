@@ -39,6 +39,12 @@ class ArgumentParserBuilder:
         self._add_decoration_arguments(decorate_parser, decorating)
         return self
 
+    def with_catalog_decorating(self, decorating):
+        decorate_parser = self.decorate_sub_parsers.add_parser(
+            'catalog', help='Decorate each software')
+        self._add_decoration_arguments(decorate_parser, decorating)
+        return self
+
     @staticmethod
     def _add_decoration_arguments(decorate_parser, decorating):
         decorate_parser.add_argument('--input', '-i', dest='input_dir', required=True,
