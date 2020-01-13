@@ -10,11 +10,8 @@ class ArgumentParserBuilder:
     def __init__(self, parser):
         self.parser = parser
         self.subparsers = self.parser.add_subparsers(help='sub-command help')
-        singularity_parser = self.subparsers.add_parser(
-            'singularity', help='Singularity image related actions')
         decorate_parser = self.subparsers.add_parser(
             'decorate', help='Decoration related actions')
-        self.singularity_sub_parsers = singularity_parser.add_subparsers(help='singularity image sub-command help')
         self.decorate_sub_parsers = decorate_parser.add_subparsers(help='decoration sub-command help')
 
     def with_version(self, version):
