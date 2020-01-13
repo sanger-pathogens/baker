@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import patch, mock_open
 
+import yaml
+
 from bakerlib.software_repository import SoftwareRepository
 
 AN_INPUT_DIR = 'AN INPUT DIRECTORY'
@@ -80,5 +82,5 @@ class TestSoftwareRetrieval(unittest.TestCase):
                 handlers = (mo.return_value, mock_open(
                     read_data=ANOTHER_YAML_CONTENT).return_value)
                 mo.side_effect = handlers
-                software_catalog = self.under_test.get_software_catalog()
-                self.assertCountEqual(software_catalog, [ANOTHER_SOFTWARE])
+                with self.assertRaises(yaml.YAMLError):
+                    self.under_test.get_software_catalog()

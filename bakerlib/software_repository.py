@@ -33,11 +33,7 @@ class SoftwareRepository:
 
     @staticmethod
     def _read_software(infile):
-        try:
-            return yaml.load(infile, Loader=yaml.SafeLoader)
-        except yaml.YAMLError:
-            _logger.exception("Could not load yaml")
-            return None
+        return yaml.load(infile, Loader=yaml.SafeLoader)
 
     def _read_software_from_file(self, filename):
         _logger.debug("Loading software from file %s", filename)
