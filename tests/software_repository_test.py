@@ -49,10 +49,10 @@ ANOTHER_SOFTWARE_ENRICHED = {
     "functions": ['function4', 'function5']}
 
 
-def glob_side_effect(value):
-    if value == AN_INPUT_DIR + "/*.yml":
+def glob_side_effect(value, **kwargs):
+    if value == AN_INPUT_DIR + "/**/*.yml":
         return [A_FILENAME]
-    if value == AN_INPUT_DIR + "/*.yaml":
+    if value == AN_INPUT_DIR + "/**/*.yaml":
         return [ANOTHER_FILENAME]
     return []
 
@@ -72,7 +72,7 @@ class TestSoftwareRetrieval(unittest.TestCase):
                 self.assertCountEqual(software_catalog, [A_SOFTWARE, ANOTHER_SOFTWARE])
 
     def test_should_return_no_software_if_no_files(self):
-        with patch('glob.glob', side_effect=lambda t: []) as _:
+        with patch('glob.glob', side_effect=lambda t, **kwargs: []) as _:
             software_catalog = self.under_test.get_software_catalog()
             self.assertEqual(software_catalog, [])
 
