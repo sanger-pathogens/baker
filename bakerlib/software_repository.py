@@ -43,6 +43,6 @@ class SoftwareRepository:
     @staticmethod
     def _list_yaml_files(directory):
         files = []
-        files.extend(glob.glob("%s/*.yml" % directory))
-        files.extend(glob.glob("%s/*.yaml" % directory))
+        files.extend(glob.glob("%s/**/*.yml" % directory, recursive=True))
+        files.extend(glob.glob("%s/**/*.yaml" % directory, recursive=True))
         return files
